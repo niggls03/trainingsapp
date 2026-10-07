@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo } from 'react'
 import { db, type LedgerEntry } from './db'
 import { playerState } from './game'
+import { sanitizeGame } from './gameState'
 import type { RunState } from './run'
 import { sanitizeSkills, type ThemeId } from './skills'
 
@@ -19,7 +20,10 @@ export function useData() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [workouts, exercises, settings],
   )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const game = useMemo(() => sanitizeGame(settings?.find((s) => s.key === 'game')?.value), [settings])
   return {
+    game,
     loaded: !!(exercises && templates && workouts && settings),
     exercises: exercises ?? [],
     templates: templates ?? [],
